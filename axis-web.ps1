@@ -33,6 +33,36 @@ for ($i = $startRow; $i -le $endRow; $i++) {
         continue
     }
 
+    # Set the parameters for the H.264 stream profile
+    $secresolution = "640x360"
+    $secframeRate = 2
+    $seccompression = 30
+    $secgopLength = 60
+    $sech264Profile = "Main"
+    $secmaxBitrate = 500
+    $secpriority = "No Priority"
+
+    # Create the H.264 stream profile
+    $createProfileResponse = Invoke-WebRequest -Method POST -Uri "http://$cameraIp/axis-cgi/admin/param.cgi?action=update" -Body @{
+        "Video.StreamProfile.H264.Name" = "Bandwidth";
+        "Video.StreamProfile.H264.Resolution" = $secresolution;
+        "Video.StreamProfile.H264.FrameRate" = $secframeRate;
+        "Video.StreamProfile.H264.Compression" = $seccompression;
+        "Video.StreamProfile.H264.GopLength" = $secgopLength;
+        "Video.StreamProfile.H264.Profile" = $sech264Profile;
+        "Video.StreamProfile.H264.MaxBitrate" = $secmaxBitrate;
+        "Video.StreamProfile.H264.Priority" = $secpriority
+
+
+    # Check if the H.264 stream profile was created successfully
+    if ($createProfileResponse.StatusDescription -match "200 OK") {
+        Write-Host "Successfully created H.264 stream profile"
+    } else {
+        Write-Host "Failed to create H.264 stream profile"
+    }
+
+
+
     # Set the FPS
     $setFpsResponse = Invoke-WebRequest -Uri "http://$cameraIp/axis-cgi/admin/param.cgi?action=update&Video.FPS.FPS=$fps"
     # Check if the FPS was set successfully
