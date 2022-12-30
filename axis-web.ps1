@@ -10,6 +10,8 @@ $priority = "No Priority"
 $h264Profile = "Main"
 $dns1 = "169.88.8.8"
 $dns2 = "169.88.9.9"
+$factUser = "root"
+$factPass = "pass"
 
 # Set the path to the Excel file
 $excel_file = "IP1.xlsx"
@@ -17,8 +19,12 @@ $excel_file = "IP1.xlsx"
 # Ask for credentials
 Write-Host "What is the username?"
 $username = Read-Host
-Write-Host "What is the password?"
-$password = Read-Host -AsSecureString
+Write-Host "What is the new password?"
+$password = Read-Host
+Write-Host "What is the NTP Server?"
+$ntpServer = Read-Host
+Write-Host "What is the time zone? ex. PST, CST etc.."
+$timeZone = Read-Host
 
 # Set the sheet and range of rows to read from the Excel file
 $sheet = "Sheet1"
@@ -32,7 +38,7 @@ for ($i = $startRow; $i -le $endRow; $i++) {
     $cameraIp = Get-Content -Path $excel_file -Line $i
 
     # Log in to the camera
-    $loginResponse = Invoke-WebRequest -Method POST -Uri "http://$cameraIp/axis-cgi/admin/login.cgi" -Body @{user=$username;pwd=$password}
+    $loginResponse = Invoke-WebRequest -Method POST -Uri "http://$cameraIp/axis-cgi/admin/login.cgi" -Body @{user=$factUser;pwd=$factPass}
     # Check if the login was successful
     if ($loginResponse.StatusDescription -match "200 OK") {
         Write-Host "Successfully logged in to camera $i"
@@ -178,4 +184,20 @@ for ($i = $startRow; $i -le $endRow; $i++) {
 		Write-Host "Failed to set DNS1 and DNS2 for camera $i"
 	}
 	
+	$setUserPass = Invoke-WebRequest -Uri "http://$cameraIp/axis-cgi/admin/pwdgrp.cgi?action=update&user=$username&pwd1=$password&pwd2=$password"
+	# Check if User/Pass was set correctly
+	if ($setUserPass.StatusDescription -match "200 OK" {
+		Write-Host "Successfully set username and password for camera $i"
+	} else {
+		Write-Host "Failed to set username and password for camera $i"
+	}
+	
+	# Set NTP Server and TimeZone
+	$setNtpTimeZone = Invoke-WebRequest -Uri "http://$cameraIp/axis-cgi/admin/pwdgrp.cgi?action=update&ntpServer=$ntpServer&TZ=$timeZone"
+	# Check if NTP Server and TimeZone were set
+	if ($setNtpTimeZone.StatusDescription -match "200 OK" {
+		Write-Host "Successfully set NTP Server and TimeZone for camera $i"
+	} else {
+		Write-Host "Failed to set NTP Server and TimeZone for camera $i"
+	}
 }
