@@ -8,8 +8,6 @@ $bitrateControl = "Maximum"
 $bitrate = 500
 $priority = "No Priority"
 $h264Profile = "Main"
-$dns1 = "169.88.8.8"
-$dns2 = "169.88.9.9"
 $factUser = "root"
 $factPass = "pass"
 
@@ -25,6 +23,10 @@ Write-Host "What is the NTP Server?"
 $ntpServer = Read-Host
 Write-Host "What is the time zone? ex. PST, CST etc.."
 $timeZone = Read-Host
+Write-Host "What is DNS1?"
+$dns1 = Read-Host
+Write-Host "What is DNS2?"
+$dns2 = Read-Host
 
 # Set the sheet and range of rows to read from the Excel file
 $sheet = "Sheet1"
