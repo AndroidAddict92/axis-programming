@@ -193,7 +193,7 @@ for ($i = $startRow; $i -le $endRow; $i++) {
 	}
 	
 	# Set NTP Server and TimeZone
-	$setNtpTimeZone = Invoke-WebRequest -Uri "http://$cameraIp/axis-cgi/admin/pwdgrp.cgi?action=update&ntpServer=$ntpServer&TZ=$timeZone"
+	$setNtpTimeZone = Invoke-WebRequest -Uri "http://$cameraIp/axis-cgi/admin/param.cgi?action=update&ntpServer=$ntpServer&TZ=$timeZone"
 	# Check if NTP Server and TimeZone were set
 	if ($setNtpTimeZone.StatusDescription -match "200 OK" {
 		Write-Host "Successfully set NTP Server and TimeZone for camera $i"
