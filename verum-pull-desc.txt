@@ -1,0 +1,3 @@
+This script will open an Excel file named "cameras.xlsx" and read the IP addresses from the first column of the sheet named "Sheet1". 
+
+For each IP address, it will connect to the camera at that address and scrape the IP address, MAC address, make, and model from the camera's "about.cgi" page
